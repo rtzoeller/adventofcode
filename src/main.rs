@@ -4,6 +4,7 @@ extern crate regex;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 fn main() -> anyhow::Result<()> {
     day1::problem1()?;
@@ -12,5 +13,6 @@ fn main() -> anyhow::Result<()> {
     day2::problem2()?;
     day3::problem1()?;
     day3::problem2()?;
+    day4::problem1()?;
     Ok(())
 }
