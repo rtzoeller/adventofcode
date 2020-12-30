@@ -60,28 +60,28 @@ fn parse_passports(file: &File) -> anyhow::Result<Vec<Passport>> {
     Ok(passports)
 }
 
-fn parse_group(group: &Vec<String>) -> Option<Passport> {
-    let kvps = group.into_iter()
-                        .map(|line| line.split(" ").collect::<Vec<_>>())
-                        .collect::<Vec<_>>()
-                        .concat();
+fn parse_group(group: &[String]) -> Option<Passport> {
+    let kvps = group.iter()
+                    .map(|line| line.split(' ').collect::<Vec<_>>())
+                    .collect::<Vec<_>>()
+                    .concat();
 
-    let fields = kvps.into_iter()
-                        .map(|kvp| kvp.split(":"))
-                        .map(|mut arr| (arr.next().zip(arr.next())))
-                        .collect::<Option<Vec<_>>>()?
-                        .into_iter()
-                        .collect::<HashMap<_, _>>();
+    let fields = kvps.iter()
+                     .map(|kvp| kvp.split(':'))
+                     .map(|mut arr| (arr.next().zip(arr.next())))
+                     .collect::<Option<Vec<_>>>()?
+                     .into_iter()
+                     .collect::<HashMap<_, _>>();
 
     let passport = Passport {
-        byr: fields.get("byr")?.clone().to_string(),
-        iyr: fields.get("iyr")?.clone().to_string(),
-        eyr: fields.get("eyr")?.clone().to_string(),
-        hgt: fields.get("hgt")?.clone().to_string(),
-        hcl: fields.get("hcl")?.clone().to_string(),
-        ecl: fields.get("ecl")?.clone().to_string(),
-        pid: fields.get("pid")?.clone().to_string(),
-        cid: fields.get("cid").clone().and_then(|x| Some(x.to_string())),
+        byr: (*fields.get("byr")?).to_string(),
+        iyr: (*fields.get("iyr")?).to_string(),
+        eyr: (*fields.get("eyr")?).to_string(),
+        hgt: (*fields.get("hgt")?).to_string(),
+        hcl: (*fields.get("hcl")?).to_string(),
+        ecl: (*fields.get("ecl")?).to_string(),
+        pid: (*fields.get("pid")?).to_string(),
+        cid: fields.get("cid").map(|x| x.to_string()),
     };
     Some(passport)
 }
