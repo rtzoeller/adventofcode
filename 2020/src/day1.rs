@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{prelude::*, self};
+use std::io::{self, prelude::*};
 use std::num::ParseIntError;
 use std::path::Path;
 
@@ -9,7 +9,7 @@ pub fn problem1() -> Result<(), ParseIntError> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file).lines();
@@ -39,7 +39,7 @@ pub fn problem2() -> Result<(), ParseIntError> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file).lines();

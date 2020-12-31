@@ -1,8 +1,8 @@
+use anyhow::Result;
 use std::collections::HashSet;
 use std::fs::File;
-use std::io::{prelude::*, self};
+use std::io::{self, prelude::*};
 use std::path::Path;
-use anyhow::Result;
 
 pub fn problem1() -> anyhow::Result<()> {
     let path = Path::new("input_day6.txt");
@@ -10,12 +10,12 @@ pub fn problem1() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file)
-                    .lines()
-                    .collect::<Result<Vec<_>, _>>()?;
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?;
 
     let forms = problem1_parse_forms(&lines);
     let sum: usize = forms.iter().map(|f| f.len()).sum();
@@ -29,12 +29,12 @@ pub fn problem2() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file)
-                    .lines()
-                    .collect::<Result<Vec<_>, _>>()?;
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?;
 
     let forms = problem2_parse_forms(&lines);
     let sum: usize = forms.iter().map(|f| f.len()).sum();
@@ -49,9 +49,12 @@ fn problem1_parse_forms(lines: &[String]) -> Vec<HashSet<char>> {
 }
 
 fn problem1_parse_form(group: &[String]) -> HashSet<char> {
-    group.iter()
-            .map(|line| line.chars())
-            .fold(HashSet::<char>::new(), |set, chars| set.union(&chars.collect()).copied().collect())
+    group
+        .iter()
+        .map(|line| line.chars())
+        .fold(HashSet::<char>::new(), |set, chars| {
+            set.union(&chars.collect()).copied().collect()
+        })
 }
 
 fn problem2_parse_forms(lines: &[String]) -> Vec<HashSet<char>> {
@@ -60,8 +63,7 @@ fn problem2_parse_forms(lines: &[String]) -> Vec<HashSet<char>> {
 }
 
 fn problem2_parse_form(group: &[String]) -> HashSet<char> {
-    let chars_by_line = group.iter()
-            .map(|line| line.chars());
+    let chars_by_line = group.iter().map(|line| line.chars());
 
     let mut set = HashSet::<char>::new();
     for (i, chars) in chars_by_line.enumerate() {

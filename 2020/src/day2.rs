@@ -1,9 +1,9 @@
+use regex::Regex;
 use std::convert::TryFrom;
 use std::fs::File;
-use std::io::{prelude::*, self};
+use std::io::{self, prelude::*};
 use std::num::ParseIntError;
 use std::path::Path;
-use regex::Regex;
 
 pub fn problem1() -> Result<(), ParseIntError> {
     let path = Path::new("input_day2.txt");
@@ -11,13 +11,14 @@ pub fn problem1() -> Result<(), ParseIntError> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file).lines();
-    let count = lines.map(|line| line.unwrap())
-                     .filter(|line| problem1_validate_line(&line))
-                     .count();
+    let count = lines
+        .map(|line| line.unwrap())
+        .filter(|line| problem1_validate_line(&line))
+        .count();
 
     println!("{}", count);
     Ok(())
@@ -39,7 +40,7 @@ fn problem1_validate_line(s: &str) -> bool {
             let count = u32::try_from(password.matches(character).count()).unwrap();
 
             lower <= count && count <= upper
-        },
+        }
     }
 }
 
@@ -49,13 +50,14 @@ pub fn problem2() -> Result<(), ParseIntError> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file).lines();
-    let count = lines.map(|line| line.unwrap())
-                     .filter(|line| problem2_validate_line(&line))
-                     .count();
+    let count = lines
+        .map(|line| line.unwrap())
+        .filter(|line| problem2_validate_line(&line))
+        .count();
 
     println!("{}", count);
     Ok(())
@@ -75,10 +77,18 @@ fn problem2_validate_line(s: &str) -> bool {
             let character = groups.get(3).unwrap().as_str().chars().next().unwrap();
             let password = groups.get(4).unwrap().as_str();
 
-            let first_match = password.chars().nth(usize::try_from(first - 1).unwrap()).unwrap() == character;
-            let second_match = password.chars().nth(usize::try_from(second - 1).unwrap()).unwrap() == character;
+            let first_match = password
+                .chars()
+                .nth(usize::try_from(first - 1).unwrap())
+                .unwrap()
+                == character;
+            let second_match = password
+                .chars()
+                .nth(usize::try_from(second - 1).unwrap())
+                .unwrap()
+                == character;
 
             first_match ^ second_match
-        },
+        }
     }
 }

@@ -1,9 +1,9 @@
-use std::convert::TryInto;
-use std::fs::File;
-use std::io::{prelude::*, self};
-use std::path::Path;
 use anyhow::Result;
 use regex::Regex;
+use std::convert::TryInto;
+use std::fs::File;
+use std::io::{self, prelude::*};
+use std::path::Path;
 
 struct BoardingPass {
     row: [char; 7],
@@ -16,17 +16,18 @@ pub fn problem1() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file)
-                    .lines()
-                    .collect::<Result<Vec<_>, _>>()?;
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?;
 
     let boarding_passes = parse_boarding_passes(&lines)?;
-    let seat_numbers = boarding_passes.iter()
-                                      .map(compute_seat_number)
-                                      .collect::<Result<Vec<u32>>>()?;
+    let seat_numbers = boarding_passes
+        .iter()
+        .map(compute_seat_number)
+        .collect::<Result<Vec<u32>>>()?;
     let max_seat_number = seat_numbers.iter().max().unwrap();
     println!("{}", max_seat_number);
     Ok(())
@@ -38,23 +39,27 @@ pub fn problem2() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let lines = io::BufReader::new(file)
-                    .lines()
-                    .collect::<Result<Vec<_>, _>>()?;
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?;
 
     let boarding_passes = parse_boarding_passes(&lines)?;
-    let mut seat_numbers = boarding_passes.iter()
-                                      .map(compute_seat_number)
-                                      .collect::<Result<Vec<u32>>>()?;
+    let mut seat_numbers = boarding_passes
+        .iter()
+        .map(compute_seat_number)
+        .collect::<Result<Vec<u32>>>()?;
     seat_numbers.sort_unstable();
 
-    let empty_seat = seat_numbers.iter().zip(seat_numbers[1..].iter())
-                                 .find(|(x, y)| *y - *x != 1)
-                                 .unwrap()
-                                 .0 + 1;
+    let empty_seat = seat_numbers
+        .iter()
+        .zip(seat_numbers[1..].iter())
+        .find(|(x, y)| *y - *x != 1)
+        .unwrap()
+        .0
+        + 1;
     println!("{}", empty_seat);
     Ok(())
 }
@@ -64,13 +69,28 @@ fn parse_boarding_passes(lines: &[String]) -> anyhow::Result<Vec<BoardingPass>> 
         static ref RE: Regex = Regex::new(r"^([FB]{7})([LR]{3})$").unwrap();
     }
 
-    Ok(lines.iter()
-            .map(|line| RE.captures(&line).unwrap()) // TODO: Remove unwrap and return error
-            .map(|groups| BoardingPass {
-                row: groups.get(1).unwrap().as_str().chars().collect::<Vec<char>>().try_into().unwrap(),
-                seat: groups.get(2).unwrap().as_str().chars().collect::<Vec<char>>().try_into().unwrap(),
-                })
-            .collect())
+    Ok(lines
+        .iter()
+        .map(|line| RE.captures(&line).unwrap()) // TODO: Remove unwrap and return error
+        .map(|groups| BoardingPass {
+            row: groups
+                .get(1)
+                .unwrap()
+                .as_str()
+                .chars()
+                .collect::<Vec<char>>()
+                .try_into()
+                .unwrap(),
+            seat: groups
+                .get(2)
+                .unwrap()
+                .as_str()
+                .chars()
+                .collect::<Vec<char>>()
+                .try_into()
+                .unwrap(),
+        })
+        .collect())
 }
 
 fn compute_seat_number(boarding_pass: &BoardingPass) -> anyhow::Result<u32> {

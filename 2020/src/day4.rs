@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use std::fs::File;
-use std::io::{prelude::*, self};
-use std::path::Path;
 use anyhow::Result;
 use regex::Regex;
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{self, prelude::*};
+use std::path::Path;
 
 #[allow(dead_code)]
 struct Passport {
@@ -23,7 +23,7 @@ pub fn problem1() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let passports = parse_passports(&file)?;
@@ -37,41 +37,44 @@ pub fn problem2() -> anyhow::Result<()> {
 
     let file = match File::open(&path) {
         Err(why) => panic!("failed to open {}: {}", display, why),
-        Ok(file) => file
+        Ok(file) => file,
     };
 
     let num_passports = parse_passports(&file)?
-                        .into_iter()
-                        .filter(validate_passport)
-                        .count();
+        .into_iter()
+        .filter(validate_passport)
+        .count();
     println!("{}", num_passports);
     Ok(())
 }
 
 fn parse_passports(file: &File) -> anyhow::Result<Vec<Passport>> {
     let lines = io::BufReader::new(file)
-                    .lines()
-                    .collect::<Result<Vec<_>, _>>()?;
+        .lines()
+        .collect::<Result<Vec<_>, _>>()?;
 
     let groups = lines.split(|line| line.is_empty());
-    let passports = groups.map(|group| parse_group(&group.to_vec()))
-                          .filter_map(|passport| passport)
-                          .collect::<Vec<Passport>>();
+    let passports = groups
+        .map(|group| parse_group(&group.to_vec()))
+        .filter_map(|passport| passport)
+        .collect::<Vec<Passport>>();
     Ok(passports)
 }
 
 fn parse_group(group: &[String]) -> Option<Passport> {
-    let kvps = group.iter()
-                    .map(|line| line.split(' ').collect::<Vec<_>>())
-                    .collect::<Vec<_>>()
-                    .concat();
+    let kvps = group
+        .iter()
+        .map(|line| line.split(' ').collect::<Vec<_>>())
+        .collect::<Vec<_>>()
+        .concat();
 
-    let fields = kvps.iter()
-                     .map(|kvp| kvp.split(':'))
-                     .map(|mut arr| (arr.next().zip(arr.next())))
-                     .collect::<Option<Vec<_>>>()?
-                     .into_iter()
-                     .collect::<HashMap<_, _>>();
+    let fields = kvps
+        .iter()
+        .map(|kvp| kvp.split(':'))
+        .map(|mut arr| (arr.next().zip(arr.next())))
+        .collect::<Option<Vec<_>>>()?
+        .into_iter()
+        .collect::<HashMap<_, _>>();
 
     let passport = Passport {
         byr: (*fields.get("byr")?).to_string(),
@@ -135,7 +138,7 @@ fn validate_hgt(passport: &Passport) -> bool {
                 "in" => 59 <= value && value <= 76,
                 _ => false,
             }
-        },
+        }
     }
 }
 
