@@ -102,21 +102,21 @@ fn validate_passport(passport: &Passport) -> bool {
 fn validate_byr(passport: &Passport) -> bool {
     match passport.byr.parse::<u32>() {
         Err(_) => false,
-        Ok(x) => 1920 <= x && x <= 2002,
+        Ok(x) => (1920..=2002).contains(&x),
     }
 }
 
 fn validate_iyr(passport: &Passport) -> bool {
     match passport.iyr.parse::<u32>() {
         Err(_) => false,
-        Ok(x) => 2010 <= x && x <= 2020,
+        Ok(x) => (2010..=2020).contains(&x),
     }
 }
 
 fn validate_eyr(passport: &Passport) -> bool {
     match passport.eyr.parse::<u32>() {
         Err(_) => false,
-        Ok(x) => 2020 <= x && x <= 2030,
+        Ok(x) => (2020..=2030).contains(&x),
     }
 }
 
@@ -134,8 +134,8 @@ fn validate_hgt(passport: &Passport) -> bool {
             };
             let unit = groups.get(2).unwrap().as_str();
             match unit {
-                "cm" => 150 <= value && value <= 193,
-                "in" => 59 <= value && value <= 76,
+                "cm" => (150..=193).contains(&value),
+                "in" => (59..=76).contains(&value),
                 _ => false,
             }
         }
@@ -150,16 +150,10 @@ fn validate_hcl(passport: &Passport) -> bool {
 }
 
 fn validate_ecl(passport: &Passport) -> bool {
-    match passport.ecl.as_str() {
-        "amb" => true,
-        "blu" => true,
-        "brn" => true,
-        "gry" => true,
-        "grn" => true,
-        "hzl" => true,
-        "oth" => true,
-        _ => false,
-    }
+    matches!(
+        passport.ecl.as_str(),
+        "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth"
+    )
 }
 
 fn validate_pid(passport: &Passport) -> bool {
