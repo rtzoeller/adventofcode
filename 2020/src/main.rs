@@ -1,7 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
-extern crate regex;
-
 mod day1;
 mod day2;
 mod day3;
