@@ -53,21 +53,22 @@ impl Ferry {
         for y in 0..self.seats.len() {
             let mut row = Vec::with_capacity(self.seats[y].len());
             for x in 0..self.seats[y].len() {
-                let neighbors = self
-                    .neighbors1(x, y)
-                    .into_iter()
-                    .filter(|x| *x == Some(&Position::Occupied))
-                    .count();
+                let neighbors = || {
+                    self.neighbors1(x, y)
+                        .into_iter()
+                        .filter(|x| *x == Some(&Position::Occupied))
+                        .count()
+                };
                 let new_seat = match self.seats[y][x] {
                     Position::Empty => {
-                        if neighbors == 0 {
+                        if neighbors() == 0 {
                             Position::Occupied
                         } else {
                             self.seats[y][x]
                         }
                     }
                     Position::Occupied => {
-                        if neighbors >= 4 {
+                        if neighbors() >= 4 {
                             Position::Empty
                         } else {
                             self.seats[y][x]
@@ -87,21 +88,22 @@ impl Ferry {
         for y in 0..self.seats.len() {
             let mut row = Vec::with_capacity(self.seats[y].len());
             for x in 0..self.seats[y].len() {
-                let neighbors = self
-                    .neighbors2(x, y)
-                    .into_iter()
-                    .filter(|x| *x == Some(&Position::Occupied))
-                    .count();
+                let neighbors = || {
+                    self.neighbors2(x, y)
+                        .into_iter()
+                        .filter(|x| *x == Some(&Position::Occupied))
+                        .count()
+                };
                 let new_seat = match self.seats[y][x] {
                     Position::Empty => {
-                        if neighbors == 0 {
+                        if neighbors() == 0 {
                             Position::Occupied
                         } else {
                             self.seats[y][x]
                         }
                     }
                     Position::Occupied => {
-                        if neighbors >= 5 {
+                        if neighbors() >= 5 {
                             Position::Empty
                         } else {
                             self.seats[y][x]
